@@ -12,7 +12,7 @@ function App() {
     <Box sx={{
       minHeight: '100vh', // Ensures the minimum height of the viewport
       display: 'flex', // Uses flexbox layout
-      width: '100%', // Full width
+      width: '100vw', // Full width
     }}>
       <InboxSection selectedItem={selected} setSelectedItem={setSelected} />
       <ChatSection selectedItem={selected} setSelectedItem={setSelected} />

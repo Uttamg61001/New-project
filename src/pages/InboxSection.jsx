@@ -58,10 +58,11 @@ function InboxSection({ selectedItem, setSelectedItem }) {
   return (
     <Box sx={{
       bgcolor: 'white',
-      width: 'full',
-      width: { sm: "455" },
+      width: { xs: '100vw', sm: 500 },
       position: 'relative',
-      display: { xs: Object.keys(selectedItem).length > 0 ? 'none' : 'block', sm: 'block' }
+      display: { xs: Object.keys(selectedItem).length > 0 ? 'none' : 'block', sm: 'block' },
+      height: '100vh',  // Full height of the viewport
+      overflow: 'hidden'  // Prevents scrolling outside the list area
     }}>
       <Box sx={{
         display: 'flex',
@@ -74,23 +75,35 @@ function InboxSection({ selectedItem, setSelectedItem }) {
         <IconButton sx={{ bgcolor: '#FBBC05', p: 1, borderRadius: '50%' }}>
           <MdKeyboardDoubleArrowLeft size={30} color="blue" />
         </IconButton>
-        <Button sx={{ bgcolor: '#394EE1', px: 3, py: 1, color: 'white', borderRadius: 1, textTransform: 'none' }}>
+        <Button  onClick={() => setSelectedItem({})} sx={{ bgcolor: '#394EE1', px: 3, py: 1, color: 'white', borderRadius: 1, textTransform: 'none' }}>
           Inbox
         </Button>
       </Box>
-      <List>
-        {chatitems.map((item, index) => (
-          <ListItem key={index} sx={{ p: 0 }}>
+      <List sx={{
+        height: 'calc(100vh - 90px)',  // Assuming AppBar height is 56px
+        overflowY: 'auto',  // Enable vertical scrolling
+        '::-webkit-scrollbar': {
+          display: 'none', // Hides scrollbar for WebKit browsers
+        },
+        scrollbarWidth: 'none' // Hides scrollbar for Firefox
+      }}>
+        {chatitems.map((item, index) => 
+        {
+          return (
+            <ListItem key={index} sx={{ p: 0 }}>
             <ChatItem
               selected={selectedItem}
               setSelected={setSelectedItem}
               item={item}
             />
           </ListItem>
-        ))}
+          )
+        }
+        )}
       </List>
     </Box>
   );
 }
 
 export default InboxSection;
+  
