@@ -1,7 +1,7 @@
-import React from 'react';
-import { MdKeyboardDoubleArrowLeft } from 'react-icons/md';
-import ChatItem from '../components/ChatItem';
-import { Box, Button } from '@mui/material';
+import React from "react";
+import { Box, Button, IconButton, List, ListItem } from "@mui/material";
+import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
+import ChatItem from "../components/ChatItem";
 
 const chatitems = [
   {
@@ -56,24 +56,39 @@ const chatitems = [
 
 function InboxSection({ selectedItem, setSelectedItem }) {
   return (
-    <Box
-      sx={{
-        bgcolor: 'white',
-        width: '100%',
-        sm: { width: '455px' },
-        position: 'relative',
-        display: Object.keys(selectedItem).length > 0 ? 'none' : 'block',
-      }}
-    >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 6, borderBottom: '2px solid rgba(0,0,0,0.25)' }}>
-        <Box sx={{ bgcolor: '#FBBC05', borderRadius: '50%', p: 1 }}>
+    <Box sx={{
+      bgcolor: 'white',
+      width: 'full',
+      width: { sm: "455" },
+      position: 'relative',
+      display: { xs: Object.keys(selectedItem).length > 0 ? 'none' : 'block', sm: 'block' }
+    }}>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        p: 2,
+        borderBottom: 1,
+        borderColor: 'grey.300'
+      }}>
+        <IconButton sx={{ bgcolor: '#FBBC05', p: 1, borderRadius: '50%' }}>
           <MdKeyboardDoubleArrowLeft size={30} color="blue" />
-        </Box>
-        <Button variant="contained" sx={{ bgcolor: '#394EE1', px: 3, py: 1, fontSize: '1rem', color: 'white', borderRadius: 'md' }}>Inbox</Button>
+        </IconButton>
+        <Button sx={{ bgcolor: '#394EE1', px: 3, py: 1, color: 'white', borderRadius: 1, textTransform: 'none' }}>
+          Inbox
+        </Button>
       </Box>
-      {chatitems.map((item, index) => (
-        <ChatItem key={index} selected={selectedItem} setSelected={setSelectedItem} item={item} />
-      ))}
+      <List>
+        {chatitems.map((item, index) => (
+          <ListItem key={index} sx={{ p: 0 }}>
+            <ChatItem
+              selected={selectedItem}
+              setSelected={setSelectedItem}
+              item={item}
+            />
+          </ListItem>
+        ))}
+      </List>
     </Box>
   );
 }
