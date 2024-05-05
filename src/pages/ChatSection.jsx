@@ -1,36 +1,51 @@
-import React, { useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import TextField from "@mui/material/TextField";
-import SendIcon from "@mui/icons-material/Send";
-import VideoCallIcon from "@mui/icons-material/VideoCall";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+  TextField,
+  Avatar,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CallIcon from "@mui/icons-material/Call";
+import VideoCallIcon from "@mui/icons-material/VideoCall";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Avatar, Badge, Hidden } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
 
 function ChatSection({ selectedItem, setSelectedItem }) {
   const [inputMsgValue, setInputMsgValue] = useState("");
-  const [displayedMessage, setDisplayedMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const messageEndRef = useRef(null);
 
   const handleMessageChange = (e) => {
     setInputMsgValue(e.target.value);
   };
 
   const handleMessageSend = () => {
-    setDisplayedMessage(inputMsgValue);
-    setInputMsgValue("");
+    if (inputMsgValue.trim()) {
+      // Avoid sending empty messages
+      setMessages([
+        ...messages,
+        { text: inputMsgValue, timestamp: new Date() },
+      ]);
+      setInputMsgValue("");
+    }
   };
+
+  // Automatically scroll to the newest message
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <Box
       sx={{
         bgcolor: "#F5EAC9",
         width: "100%",
+        height: "100vh",
         display: {
           xs: Object.keys(selectedItem).length > 0 ? "block" : "none",
           sm: "block",
@@ -71,44 +86,42 @@ function ChatSection({ selectedItem, setSelectedItem }) {
       </AppBar>
 
       <Box
-          sx={{
-            display: "flex",
-            borderRadius: "20px",
-            p: 1, 
-            backgroundColor:"red"
-          }}
-        >
-          {/* {displayedMessage && (
-            <Box sx={{ alignSelf: 'flex-end', bgcolor: '#394EE1', color: 'common.white', p: 1, borderRadius: '10px', my: 1 }}>
-              {displayedMessage}
-              <Typography variant="caption" sx={{ display: 'block', textAlign: 'right' }}>8:09 ✓✓</Typography>
-            </Box>
-          )} */}
-
-          <Typography
+        className="MessageContainer"
+        sx={{
+          flex: 1,
+          overflowY: "auto",
+          flexDirection: "column",
+          display: "flex",
+          p: 1,
+        }}
+      >
+        {messages.map((message, index) => (
+          <Box
+            key={index}
             sx={{
-              bgcolor: "white",
+              alignSelf: "flex-end",
+              bgcolor: "#394EE1",
+              color: "white",
               p: 1,
               borderRadius: "10px",
               my: 1,
-              color:"black",
-              display: "inline", // Make the Typography width only as wide as its content
-              whiteSpace: "nowrap", // Optional, prevents the text from wrapping
             }}
-           
           >
-            Hii how are you
+            {message.text}
             <Typography
               variant="caption"
-              sx={{
-                display: "block",
-                textAlign: "right",
-              }}
+              sx={{ display: "block", textAlign: "right" }}
             >
-              8:09 ✓✓
+              {message.timestamp.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}{" "}
+              ✓✓
             </Typography>
-          </Typography>
-        </Box>
+          </Box>
+        ))}
+        <div ref={messageEndRef} />
+      </Box>
 
       <Box
         sx={{
@@ -117,29 +130,26 @@ function ChatSection({ selectedItem, setSelectedItem }) {
           width: "100%",
           p: 2,
           boxSizing: "border-box",
+          bgcolor: "background.paper",
         }}
       >
-      
-
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            bgcolor: "background.paper",
             borderRadius: "20px",
-            px: 2,
           }}
         >
-          <EmojiEmotionsIcon />
+          <EmojiEmotionsIcon sx={{ mr: 2 }} />
           <TextField
             fullWidth
-            variant="standard"
+            variant="outlined" // Changed from 'standard' to 'outlined' for better visual clarity
             placeholder="Message"
             value={inputMsgValue}
             onChange={handleMessageChange}
-            sx={{ mx: 2 }}
+            sx={{ flexGrow: 1 }} // Ensure TextField expands appropriately
           />
-          <IconButton onClick={handleMessageSend}>
+          <IconButton onClick={handleMessageSend} sx={{ ml: 2 }}>
             <SendIcon />
           </IconButton>
         </Box>
